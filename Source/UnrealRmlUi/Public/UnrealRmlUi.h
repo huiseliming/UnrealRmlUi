@@ -19,8 +19,8 @@ public:
 	TUniquePtr<CUnrealRmlSystemInterface> UnrealRmlSystemInterface;
 	TUniquePtr<CUnrealRmlRenderInterface> UnrealRmlRenderInterface;
 
-	void* FreeTypeDllHandle = nullptr;
-	void* RmlCoreDllHandle = nullptr;
-	void* RmlDebuggerDllHandle = nullptr;
+	//void* FreeTypeDllHandle = nullptr;
+	//void* RmlCoreDllHandle = nullptr;
+	//void* RmlDebuggerDllHandle = nullptr;
 };
 

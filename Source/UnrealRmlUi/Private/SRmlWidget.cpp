@@ -392,69 +392,15 @@ void SRmlWidget::SaveDocumentToFile(const FString& InFilePath)
                             ChildXMLElement->SetAttribute(String.c_str(), Variant.Get<Rml::String>().c_str());
                         }
                         Rml::String Style;
-                        //Rml::PropertiesIteratorView PropertiesIteratorView = ChildRmlElement->IterateLocalProperties();
-                        //while (!PropertiesIteratorView.AtEnd())
-                        //{
-                        //	Rml::String StylePropertyName = Rml::StyleSheetSpecification::GetPropertyName(PropertiesIteratorView.GetId());
-                        //	Rml::String StylePropertyValue = PropertiesIteratorView.GetProperty().ToString();
-                        //	Style += StylePropertyName + ": " + StylePropertyValue + ";";
-                        //	++PropertiesIteratorView;
-                        //}
-                        //ChildXMLElement->SetAttribute("style", Style.c_str());
-
-                        //const Rml::PropertyMap& LocalStyleProperties = ChildRmlElement->GetLocalStyleProperties();
-                        //int32 NumLocalStyleProperties = LocalStyleProperties.size();
-                        //if (NumLocalStyleProperties > 0)
-                        //{
-                        //	int32 CurrentLocalStylePropertyIndex = 0;
-                        //	auto LocalPropertyIterator = LocalStyleProperties.begin();
-                        //	do
-                        //	{
-                        //		Rml::String StylePropertyName = Rml::StyleSheetSpecification::GetPropertyName(LocalPropertyIterator->first);
-                        //		Rml::String StylePropertyValue = LocalPropertyIterator->second.ToString();
-                        //		Style += StylePropertyName + ": " + StylePropertyValue + ";";
-                        //		++LocalPropertyIterator;
-                        //		++CurrentLocalStylePropertyIndex;
-                        //	} while (CurrentLocalStylePropertyIndex < NumLocalStyleProperties);
-                        //	ChildXMLElement->SetAttribute("style", Style.c_str());
-                        //}
-
-                        //Rml::SharedPtr<const Rml::ElementDefinition> ElementDefinition = ChildRmlElement->GetStyleSheet()->GetElementDefinition(ChildRmlElement);
-                        //const Rml::ElementStyle* ElementStyle = ChildRmlElement->GetStyle();
-                        Rml::ElementStyle* ElementStyle = ChildRmlElement->GetStyle();
-                        if (ElementStyle)
-                        {
-
-                        }
                         const Rml::PropertyMap& LocalStyleProperties = ChildRmlElement->GetLocalStyleProperties();
                         if (LocalStyleProperties.size() > 0)
                         {
-                            auto NumLocalStyleProperties = LocalStyleProperties.size();
-                            auto LocalPropertyIterator = LocalStyleProperties.begin();
-                            for (int32 i = 0; i < NumLocalStyleProperties; i++)
+                            for (auto& [PropertyId, Property] : LocalStyleProperties)
                             {
-                                if (i != 0)
-                                    ++LocalPropertyIterator;
-                                if (LocalPropertyIterator->second.value.GetType() != Rml::Variant::NONE)
-                                {
-                                    Rml::String StylePropertyName = Rml::StyleSheetSpecification::GetPropertyName(LocalPropertyIterator->first);
-                                    Rml::String StylePropertyValue = LocalPropertyIterator->second.ToString();
-                                    Style += StylePropertyName + ": " + ";";
-                                }
-                                //Style += StylePropertyName + ": " + StylePropertyValue + ";";
+                            	Rml::String StylePropertyName = Rml::StyleSheetSpecification::GetPropertyName(PropertyId);
+                            	Rml::String StylePropertyValue = ChildRmlElement->GetProperty(PropertyId)->ToString();
+                            	Style += StylePropertyName + ": " + StylePropertyValue + ";";
                             }
-                            //UE_LOG(LogTemp, Warning, TEXT("0"));
-                            //for (auto& [PropertyId, Property] : LocalStyleProperties)
-                            //{
-                            //	UE_LOG(LogTemp, Warning, TEXT("1"));
-                            //	Rml::String StylePropertyName = Rml::StyleSheetSpecification::GetPropertyName(PropertyId);
-                            //	UE_LOG(LogTemp, Warning, TEXT("2"));
-                            //	Rml::String StylePropertyValue = ChildRmlElement->GetProperty(PropertyId)->ToString();
-                            //	UE_LOG(LogTemp, Warning, TEXT("3"));
-                            //	Style += StylePropertyName + ": " + StylePropertyValue + ";";
-                            //	UE_LOG(LogTemp, Warning, TEXT("4"));
-                            //}
-                            //UE_LOG(LogTemp, Warning, TEXT("5"));
                             ChildXMLElement->SetAttribute("style", Style.c_str());
                         }
                         ParentXMLElement->InsertEndChild(ChildXMLElement);
