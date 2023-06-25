@@ -12,42 +12,13 @@
 
 void FUnrealRmlUiModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 	FString BaseDir = IPluginManager::Get().FindPlugin("UnrealRmlUi")->GetBaseDir();
-//	FString FreeTypeDllPath;
-//	FString RmlCoreDllPath;
-//	FString RmlDebuggerDllPath;
-//	bool bIsDebug = FApp::GetBuildConfiguration() == EBuildConfiguration::Debug || FApp::GetBuildConfiguration() == EBuildConfiguration::DebugGame;
-//
-//#if PLATFORM_WINDOWS
-//	FreeTypeDllPath = FPaths::Combine(*BaseDir, TEXT("Source"), TEXT("RmlUi"), TEXT("Bin"), TEXT("Dynamic-Release"), TEXT("freetype.dll"));
-//	RmlCoreDllPath = FPaths::Combine(*BaseDir, TEXT("Source"), TEXT("RmlUi"), TEXT("Bin"), TEXT("Dynamic-Release"), TEXT("RmlCore.dll"));
-//	RmlDebuggerDllPath = FPaths::Combine(*BaseDir, TEXT("Source"), TEXT("RmlUi"), TEXT("Bin"), TEXT("Dynamic-Release"), TEXT("RmlDebugger.dll"));
-//#elif PLATFORM_MAC
-//	UE_LOG(LogTemp, Fatal, TEXT("PLATFORM NOT IMPL"));
-//#elif PLATFORM_LINUX
-//	UE_LOG(LogTemp, Fatal, TEXT("PLATFORM NOT IMPL"));
-//#endif // PLATFORM_WINDOWS
-//
-//	FreeTypeDllHandle = !FreeTypeDllPath.IsEmpty() ? FPlatformProcess::GetDllHandle(*FreeTypeDllPath) : nullptr;
-//	if (nullptr == FreeTypeDllHandle)
-//	{
-//		UE_LOG(LogTemp, Fatal, TEXT("LOAD %s FAILED!"), *FreeTypeDllPath);
-//	}
-//	RmlCoreDllHandle = !RmlCoreDllPath.IsEmpty() ? FPlatformProcess::GetDllHandle(*RmlCoreDllPath) : nullptr;
-//	if (nullptr == RmlCoreDllHandle)
-//	{
-//		UE_LOG(LogTemp, Fatal, TEXT("LOAD %s FAILED!"), *RmlCoreDllPath);
-//	}
-//	RmlDebuggerDllHandle = !RmlDebuggerDllPath.IsEmpty() ? FPlatformProcess::GetDllHandle(*RmlDebuggerDllPath) : nullptr;
-//	if (nullptr == RmlDebuggerDllHandle)
-//	{
-//		UE_LOG(LogTemp, Fatal, TEXT("LOAD %s FAILED!"), *RmlDebuggerDllPath);
-//	}
+
 	UnrealRmlSystemInterface = MakeUnique<CUnrealRmlSystemInterface>();
 	UnrealRmlRenderInterface = MakeUnique<CUnrealRmlRenderInterface>();
 	Rml::SetSystemInterface(UnrealRmlSystemInterface.Get());
 	Rml::SetRenderInterface(UnrealRmlRenderInterface.Get());
+
 	Rml::Initialise();
 
 	auto LoadFontFace = [](const Rml::String& file_path, bool fallback_face = false)
@@ -119,8 +90,6 @@ void FUnrealRmlUiModule::ShutdownModule()
 	Rml::Shutdown();
 	UnrealRmlRenderInterface.Reset();
 	UnrealRmlSystemInterface.Reset();
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
 }
 
 #undef LOCTEXT_NAMESPACE

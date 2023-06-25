@@ -17,10 +17,6 @@ public:
 	virtual void ShutdownModule() override;
 
 	TUniquePtr<CUnrealRmlSystemInterface> UnrealRmlSystemInterface;
-	TUniquePtr<CUnrealRmlRenderInterface> UnrealRmlRenderInterface;
-
-	//void* FreeTypeDllHandle = nullptr;
-	//void* RmlCoreDllHandle = nullptr;
-	//void* RmlDebuggerDllHandle = nullptr;
+	TUniquePtr<CUnrealRmlRenderInterface> UnrealRmlRenderInterface;	
 };
 
