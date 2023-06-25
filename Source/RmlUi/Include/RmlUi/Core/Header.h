@@ -37,7 +37,9 @@
 #if !defined RMLUI_STATIC_LIB
 	#if defined RMLUI_PLATFORM_WIN32
 		#if defined RmlCore_EXPORTS
-			#define RMLUICORE_API __declspec(dllexport)
+			#if !defined RMLUICORE_API
+				#define RMLUICORE_API __declspec(dllexport)
+			#endif
 			// Note: Changing a RMLUICORE_API_INLINE method
 			// breaks ABI compatibility!!
 			
@@ -45,9 +47,11 @@
 			// that may be inlined in DLL clients, or if not
 			// possible the client may choose to import the copy
 			// in the DLL if it can not be inlined.
-			#define RMLUICORE_API_INLINE __declspec(dllexport) inline
+			#define RMLUICORE_API_INLINE RMLUICORE_API inline
 		#else
-			#define RMLUICORE_API __declspec(dllimport)
+			#if !defined RMLUICORE_API
+				#define RMLUICORE_API __declspec(dllimport)
+			#endif
 			// Note: Changing a RMLUICORE_API_INLINE method
 			// breaks ABI compatibility!!
 
@@ -61,7 +65,7 @@
 				// /Ob1 or /Ob2 options are given for inline
 				// expansion, or pulled from the DLL if it can
 				// not be inlined.
-				#define RMLUICORE_API_INLINE __declspec(dllimport) inline
+				#define RMLUICORE_API_INLINE RMLUICORE_API inline
 			#else
 				// MinGW 32/64 dllimport inline is not supported
 				// and dllimport is ignored, so we avoid using

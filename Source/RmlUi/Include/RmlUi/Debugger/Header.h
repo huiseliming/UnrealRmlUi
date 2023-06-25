@@ -34,9 +34,13 @@
 #if !defined RMLUI_STATIC_LIB
 	#ifdef RMLUI_PLATFORM_WIN32
 		#ifdef RmlDebugger_EXPORTS
-			#define RMLUIDEBUGGER_API __declspec(dllexport)
+			#if !defined RMLUIDEBUGGER_API
+				#define RMLUIDEBUGGER_API __declspec(dllexport)
+			#endif
 		#else
-			#define RMLUIDEBUGGER_API __declspec(dllimport)
+			#if !defined RMLUIDEBUGGER_API
+				#define RMLUIDEBUGGER_API __declspec(dllimport)
+			#endif
 		#endif
 	#else
 		#define RMLUIDEBUGGER_API __attribute__((visibility("default")))
