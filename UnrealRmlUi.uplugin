@@ -1,0 +1,35 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "UnrealRmlUi",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "huiseliming",
+	"CreatedByURL": "https://github.com/huiseliming",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+
+		{
+			"Name": "RmlUiCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "RmlUiDebugger",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UnrealRmlUi",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
