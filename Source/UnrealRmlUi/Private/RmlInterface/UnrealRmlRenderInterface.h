@@ -36,7 +36,7 @@ public:
 	void OnMediaEvent(EMediaEvent Event);
 	void Tick(float DeltaTime);
 public:
-	UMediaPlayer* Player;
+	TWeakObjectPtr<UMediaPlayer> WeakPlayerPtr;
 	UMediaSoundComponent* SoundComponent;
 	UMaterial* Material;
 	UMaterialExpressionTextureSample* TextureSampler;
@@ -45,7 +45,7 @@ protected:
 	virtual void AddReferencedObjects(FReferenceCollector& InCollector) override
 	{
 		FTextureReferencer::AddReferencedObjects(InCollector);
-		InCollector.AddReferencedObject(Player);
+		//InCollector.AddReferencedObject(Player);
 		InCollector.AddReferencedObject(SoundComponent);
 		InCollector.AddReferencedObject(Material);
 		InCollector.AddReferencedObject(TextureSampler);

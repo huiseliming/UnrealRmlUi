@@ -26,12 +26,12 @@ FTextureReferencer::~FTextureReferencer()
 
 FMediaTextureReferencer::FMediaTextureReferencer(UMediaTexture* InMediaTexture, FString InResourcePath)
 	: FTextureReferencer(InMediaTexture, InResourcePath)
-	, Player(nullptr)
 	, SoundComponent(nullptr)
 	, Material(nullptr)
 	, TextureSampler(nullptr)
 {
-	Player = NewObject<UMediaPlayer>();
+	UMediaPlayer* Player = NewObject<UMediaPlayer>();
+	WeakPlayerPtr = Player;
 	SoundComponent = NewObject<UMediaSoundComponent>();
 	SoundComponent->bIsUISound = true;
 	SoundComponent->bIsPreviewSound = true;
@@ -86,7 +86,7 @@ FMediaTextureReferencer::FMediaTextureReferencer(UMediaTexture* InMediaTexture, 
 
 FMediaTextureReferencer::~FMediaTextureReferencer()
 {
-	if (Player)
+	if (UMediaPlayer* Player = WeakPlayerPtr.Get())
 	{
 		Player->OnMediaEvent().RemoveAll(this);
 	}
