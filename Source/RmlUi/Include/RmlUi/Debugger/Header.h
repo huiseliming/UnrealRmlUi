@@ -43,7 +43,9 @@
 			#endif
 		#endif
 	#else
-		#define RMLUIDEBUGGER_API __attribute__((visibility("default")))
+		#if !defined RMLUIDEBUGGER_API
+			#define RMLUIDEBUGGER_API __attribute__((visibility("default")))
+		#endif
 	#endif
 #else
 	#define RMLUIDEBUGGER_API

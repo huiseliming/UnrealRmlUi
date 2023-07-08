@@ -33,6 +33,7 @@
 #include "../../Include/RmlUi/Core/Types.h"
 #include "../../Include/RmlUi/Core/Variant.h"
 #include "DataView.h"
+#include "DataExpression.h"
 
 namespace Rml {
 

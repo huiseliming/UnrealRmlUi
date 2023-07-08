@@ -38,8 +38,7 @@ public:
 public:
 	TWeakObjectPtr<UMediaPlayer> WeakPlayerPtr;
 	UMediaSoundComponent* SoundComponent;
-	UMaterial* Material;
-	UMaterialExpressionTextureSample* TextureSampler;
+	UMaterialInstanceDynamic* Material;
 protected:
 	virtual FString GetReferencerName() const override { return TEXT("FSlateResourceReferencer"); }
 	virtual void AddReferencedObjects(FReferenceCollector& InCollector) override
@@ -48,7 +47,6 @@ protected:
 		//InCollector.AddReferencedObject(Player);
 		InCollector.AddReferencedObject(SoundComponent);
 		InCollector.AddReferencedObject(Material);
-		InCollector.AddReferencedObject(TextureSampler);
 	}
 };
 

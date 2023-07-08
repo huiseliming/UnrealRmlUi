@@ -75,10 +75,14 @@
 			#endif
 		#endif
 	#else
-		#define RMLUICORE_API __attribute__((visibility("default")))
+		#if !defined RMLUICORE_API
+			#define RMLUICORE_API __attribute__((visibility("default")))
+		#endif
 		// Note: Changing a RMLUICORE_API_INLINE method
 		// breaks ABI compatibility!!
-		#define RMLUICORE_API_INLINE __attribute__((visibility("default"))) inline
+		#if !defined RMLUICORE_API_INLINE
+			#define RMLUICORE_API_INLINE RMLUICORE_API inline
+		#endif
 	#endif
 #else
 	#define RMLUICORE_API

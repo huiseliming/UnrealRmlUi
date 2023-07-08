@@ -21,7 +21,9 @@ public:
 	
 protected:
 	virtual TSharedRef<SWidget> RebuildWidget() override;
+#if WITH_EDITOR
 	virtual TSharedRef<SWidget> RebuildDesignWidget(TSharedRef<SWidget> Content) override;
+#endif
 
 protected:
 	TWeakPtr<SRmlWidget> RmlWidget;

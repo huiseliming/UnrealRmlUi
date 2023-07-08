@@ -18,6 +18,7 @@ TSharedRef<SWidget> URmlWidget::RebuildWidget()
 	return RmlWidgetPtr.ToSharedRef();
 }
 
+#if WITH_EDITOR
 TSharedRef<SWidget> URmlWidget::RebuildDesignWidget(TSharedRef<SWidget> Content)
 {
 	TSharedRef<SRmlWidget> RmlWidgetRef = StaticCastSharedRef<SRmlWidget>(Content);
@@ -36,6 +37,7 @@ TSharedRef<SWidget> URmlWidget::RebuildDesignWidget(TSharedRef<SWidget> Content)
 	RmlWidgetRef->LoadDocument(DocumentFilePath);
 	return Content;
 }
+#endif
 
 void URmlWidget::ReloadDocuments()
 {

@@ -28,7 +28,6 @@ FMediaTextureReferencer::FMediaTextureReferencer(UMediaTexture* InMediaTexture, 
 	: FTextureReferencer(InMediaTexture, InResourcePath)
 	, SoundComponent(nullptr)
 	, Material(nullptr)
-	, TextureSampler(nullptr)
 {
 	UMediaPlayer* Player = NewObject<UMediaPlayer>();
 	WeakPlayerPtr = Player;
@@ -41,39 +40,45 @@ FMediaTextureReferencer::FMediaTextureReferencer(UMediaTexture* InMediaTexture, 
 	InMediaTexture->AutoClear = true;
 	InMediaTexture->SetMediaPlayer(Player);
 	Texture->UpdateResource();
-	Texture->AddToRoot();
-	Material = NewObject<UMaterial>();
-	TextureSampler = NewObject<UMaterialExpressionTextureSample>(Material);
+	if (UMaterial* MediaMaterial = Cast<UMaterial>(StaticLoadObject(UObject::StaticClass(), nullptr, TEXT("Material'/UnrealRmlUi/Mat_MediaMaterial.Mat_MediaMaterial''"))))
 	{
-		TextureSampler->Texture = Texture;
-		TextureSampler->AutoSetSampleType();
-	}
-	FExpressionOutput& Output = TextureSampler->GetOutputs()[0];
-	FExpressionInput& Input = Material->EmissiveColor;
-	{
-		Input.Expression = TextureSampler;
-		Input.Mask = Output.Mask;
-		Input.MaskR = Output.MaskR;
-		Input.MaskG = Output.MaskG;
-		Input.MaskB = Output.MaskB;
-		Input.MaskA = Output.MaskA;
+		Material = UMaterialInstanceDynamic::Create(MediaMaterial, MediaMaterial);
+		Material->SetTextureParameterValue(TEXT("MediaTexture"), Texture);
 	}
 
-	FExpressionInput& Opacity = Material->Opacity;
-	{
-		Opacity.Expression = TextureSampler;
-		Opacity.Mask = Output.Mask;
-		Opacity.MaskR = 0;
-		Opacity.MaskG = 0;
-		Opacity.MaskB = 0;
-		Opacity.MaskA = 1;
-	}
+	//Texture->AddToRoot();
+	//Material = NewObject<UMaterial>();
+	//TextureSampler = NewObject<UMaterialExpressionTextureSample>(Material);
+	//{
+	//	TextureSampler->Texture = Texture;
+	//	TextureSampler->AutoSetSampleType();
+	//}
+	//FExpressionOutput& Output = TextureSampler->GetOutputs()[0];
+	//FExpressionInput& Input = Material->EmissiveColor;
+	//{
+	//	Input.Expression = TextureSampler;
+	//	Input.Mask = Output.Mask;
+	//	Input.MaskR = Output.MaskR;
+	//	Input.MaskG = Output.MaskG;
+	//	Input.MaskB = Output.MaskB;
+	//	Input.MaskA = Output.MaskA;
+	//}
 
-	Material->BlendMode = BLEND_AlphaComposite;
+	//FExpressionInput& Opacity = Material->Opacity;
+	//{
+	//	Opacity.Expression = TextureSampler;
+	//	Opacity.Mask = Output.Mask;
+	//	Opacity.MaskR = 0;
+	//	Opacity.MaskG = 0;
+	//	Opacity.MaskB = 0;
+	//	Opacity.MaskA = 1;
+	//}
 
-	Material->Expressions.Add(TextureSampler);
-	Material->MaterialDomain = EMaterialDomain::MD_UI;
-	Material->PostEditChange();
+	//Material->BlendMode = BLEND_AlphaComposite;
+
+	//Material->Expressions.Add(TextureSampler);
+	//Material->MaterialDomain = EMaterialDomain::MD_UI;
+	//Material->PostEditChange();
 
 	Player->OnMediaEvent().AddRaw(this, &FMediaTextureReferencer::OnMediaEvent);
 
