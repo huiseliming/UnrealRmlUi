@@ -13,7 +13,7 @@ TSharedRef<SWidget> URmlWidget::RebuildWidget()
 {
 	if (DocumentFilePath.IsEmpty())
 	{
-		DocumentFilePath = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectContentDir(), TEXT("HelloWorld"), TEXT("hello_world.rml")));
+		DocumentFilePath = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectContentDir(), TEXT("HelloWorld"), TEXT("hello_world.html")));
 	}
 	TSharedPtr<SRmlWidget> RmlWidgetPtr =  RmlWidget.Pin();
 	if (!RmlWidgetPtr.IsValid())

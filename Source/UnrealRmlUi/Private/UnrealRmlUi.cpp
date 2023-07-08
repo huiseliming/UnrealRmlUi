@@ -34,17 +34,19 @@ void FUnrealRmlUiModule::StartupModule()
 			}
 		}
 	};
-
+	// TODO: IMPL RML FILE INTERFACE FOR ANDROID LOAD FILE 
 	// load 'Consolas' font
-	LoadFontFace("C:\\Windows\\Fonts\\consola.ttf", false);
-	LoadFontFace("C:\\Windows\\Fonts\\consolab.ttf", false);
-	LoadFontFace("C:\\Windows\\Fonts\\consolaz.ttf", false);
-	LoadFontFace("C:\\Windows\\Fonts\\consolai.ttf", false);
-	
-	//load 'Microsoft YaHei' font
-	LoadFontFace("C:\\Windows\\Fonts\\msyhbd.ttc", false);
-	LoadFontFace("C:\\Windows\\Fonts\\msyhl.ttc", false);
-	LoadFontFace("C:\\Windows\\Fonts\\msyh.ttc", true);
+	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("consola.ttf"))), false);
+	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("consolab.ttf"))), false);
+	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("consolaz.ttf"))), false);
+	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("consolai.ttf"))), false);
+
+	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("simsun.ttc"))), true);
+
+	////load 'Microsoft YaHei' font
+	//LoadFontFace("C:\\Windows\\Fonts\\msyhbd.ttc", false);
+	//LoadFontFace("C:\\Windows\\Fonts\\msyhl.ttc", false);
+	//LoadFontFace("C:\\Windows\\Fonts\\msyh.ttc", true);
 
 #define TEST 1
 #if TEST
