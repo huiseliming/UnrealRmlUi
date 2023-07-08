@@ -7,9 +7,7 @@
 #include "RmlInterface/UnrealRmlRenderInterface.h"
 #include "RmlInterface/UnrealRmlSystemInterface.h"
 
-THIRD_PARTY_INCLUDES_START
-#include "tinyxml2.h"
-THIRD_PARTY_INCLUDES_END
+#include "TinyXML2Fwd.h"
 
 TSharedPtr<SRmlWidget> SRmlWidget::FocusedRmlWidget;
 static int32 GContextIndexCounter = 0;

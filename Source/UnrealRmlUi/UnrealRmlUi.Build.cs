@@ -8,7 +8,6 @@ public class UnrealRmlUi : ModuleRules
 	public UnrealRmlUi(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		bUseRTTI = true;
 		bUseUnity = false;
 		
         PublicSystemIncludePaths.Add(Path.Combine(ModuleDirectory, "..", "RmlUi", "Include"));
@@ -51,6 +50,7 @@ public class UnrealRmlUi : ModuleRules
 				"Projects", 
 				"MediaAssets",
                 "AudioMixer",
+                "TinyXML2",
 				// ... add private dependencies that you statically link with here ...	
 			}
             );

@@ -2,6 +2,7 @@
 
 
 #include "RmlWidget.h"
+#include "Interfaces/IPluginManager.h"
 
 void URmlWidget::ReleaseSlateResources(bool bReleaseChildren)
 {
@@ -10,6 +11,10 @@ void URmlWidget::ReleaseSlateResources(bool bReleaseChildren)
 
 TSharedRef<SWidget> URmlWidget::RebuildWidget()
 {
+	if (DocumentFilePath.IsEmpty())
+	{
+		DocumentFilePath = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectContentDir(), TEXT("HelloWorld"), TEXT("hello_world.rml")));
+	}
 	TSharedPtr<SRmlWidget> RmlWidgetPtr =  RmlWidget.Pin();
 	if (!RmlWidgetPtr.IsValid())
 		RmlWidgetPtr = SAssignNew(RmlWidget, SRmlWidget);

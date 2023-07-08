@@ -4,7 +4,6 @@
 
 #include "Interfaces/IPluginManager.h"
 #include "Misc/Paths.h"
-#include "Windows/WindowsPlatformProcess.h"
 
 #include "SRmlWidget.h"
 

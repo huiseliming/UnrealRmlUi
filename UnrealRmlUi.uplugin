@@ -31,5 +31,11 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
+	],
+	"Plugins": [
+		{
+			"Name": "CppLibraries",
+			"Enabled": true
+		}
 	]
 }

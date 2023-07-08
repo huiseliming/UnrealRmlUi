@@ -86,6 +86,7 @@ public class RmlUiCore : ModuleRules
         PrivateDependencyModuleNames.Add("zlib");
         PrivateDependencyModuleNames.Add("FreeType2");
         PublicDefinitions.Add("RMLUI_NO_THIRDPARTY_CONTAINERS");
+        PublicDefinitions.Add("RMLUI_USE_CUSTOM_RTTI");
         if (!Directory.Exists(Path.Combine(ModuleDirectory, "Private", "Core")))
         {
 	        Directory.CreateDirectory(Path.Combine(ModuleDirectory, "Private", "Core"));
