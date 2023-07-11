@@ -1,10 +1,29 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+using System;
 using System.IO;
 using UnrealBuildTool;
 
 public class UnrealRmlUi : ModuleRules
 {
+	void AddRmlRuntimeDependencies(string InRmlSearchDirectory)
+	{
+		DirectoryInfo RmlSearchDirectoryInfo = new DirectoryInfo(InRmlSearchDirectory);
+		FileSystemInfo[] RmlFileSystemInfos = RmlSearchDirectoryInfo.GetFileSystemInfos();
+		foreach (FileSystemInfo RmlFileSystemInfo in RmlFileSystemInfos)
+		{
+			Console.WriteLine("AddRmlRuntimeDependencies : " + RmlFileSystemInfo.FullName);
+			if (RmlFileSystemInfo is DirectoryInfo)
+			{
+				AddRmlRuntimeDependencies(RmlFileSystemInfo.FullName);
+			}
+			else
+			{
+				RuntimeDependencies.Add(RmlFileSystemInfo.FullName);
+			}
+		}
+	}
+	
 	public UnrealRmlUi(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
@@ -62,5 +81,6 @@ public class UnrealRmlUi : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
+		AddRmlRuntimeDependencies(Path.Combine(ModuleDirectory, "..", "..", "Resources", "Rml"));
 	}
 }

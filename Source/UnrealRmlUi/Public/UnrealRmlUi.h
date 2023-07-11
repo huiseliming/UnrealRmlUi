@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
+#include "RmlInterface/UnrealRmlFileInterface.h"
 #include "RmlInterface/UnrealRmlRenderInterface.h"
 #include "RmlInterface/UnrealRmlSystemInterface.h"
 

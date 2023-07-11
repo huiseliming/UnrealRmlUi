@@ -438,7 +438,7 @@ void SRmlWidget::ActivateIME()
             TSharedRef<FRmlTextInputMethodContext> TextInputMethodContextRef = TextInputMethodContext.ToSharedRef();
             if (!TextInputMethodSystem->IsActiveContext(TextInputMethodContextRef))
             {
-                //UE_LOG(LogTemp, Warning, TEXT("ActivateIME"));
+                UE_LOG(LogTemp, Warning, TEXT("ActivateIME"));
                 TextInputMethodSystem->ActivateContext(TextInputMethodContextRef);
             }
         }
@@ -462,7 +462,7 @@ void SRmlWidget::DeactivateIME()
                         TextInputMethodChangeNotifier->CancelComposition();
                     }
                 }
-                //UE_LOG(LogTemp, Warning, TEXT("DeactivateIME"));
+                UE_LOG(LogTemp, Warning, TEXT("DeactivateIME"));
                 TextInputMethodSystem->DeactivateContext(TextInputMethodContextRef);
             }
         }

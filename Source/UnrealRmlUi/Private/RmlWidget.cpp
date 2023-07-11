@@ -11,10 +11,9 @@ void URmlWidget::ReleaseSlateResources(bool bReleaseChildren)
 
 TSharedRef<SWidget> URmlWidget::RebuildWidget()
 {
-	if (DocumentFilePath.IsEmpty())
-	{
-		DocumentFilePath = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectContentDir(), TEXT("HelloWorld"), TEXT("hello_world.html")));
-	}
+	FString PluginBaseDir = IPluginManager::Get().FindPlugin("UnrealRmlUi")->GetBaseDir();
+	DocumentFilePath = FPlatformFileManager::Get().GetPlatformFile().ConvertToAbsolutePathForExternalAppForWrite(*(PluginBaseDir / TEXT("Resources") / TEXT("Rml") / TEXT("hello_world.html")));
+	UE_LOG(LogTemp, Warning, TEXT("DocumentFilePath: %s"), *DocumentFilePath);
 	TSharedPtr<SRmlWidget> RmlWidgetPtr =  RmlWidget.Pin();
 	if (!RmlWidgetPtr.IsValid())
 		RmlWidgetPtr = SAssignNew(RmlWidget, SRmlWidget);

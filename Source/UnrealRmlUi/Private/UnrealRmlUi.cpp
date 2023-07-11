@@ -9,12 +9,92 @@
 
 #define LOCTEXT_NAMESPACE "FUnrealRmlUiModule"
 
+void CopyAssetsToExternal(TArray<TFunction<void()>>& PlatformFileTasks, FString InDirectory)
+{
+#if PLATFORM_ANDROID
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+	IFileManager* FileManager = &IFileManager::Get();
+	class FVisitor : public IPlatformFile::FDirectoryVisitor
+	{
+	public:
+ 		FVisitor(const TFunction<bool (const TCHAR* FilenameOrDirectory, bool bIsDirectory)>& InVisitor) : Visitor(InVisitor) {}
+ 		virtual bool Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory) { return Visitor(FilenameOrDirectory, bIsDirectory); }
+ 		TFunction<bool (const TCHAR* FilenameOrDirectory, bool bIsDirectory)> Visitor;
+	};
+	UE_LOG(LogTemp, Warning, TEXT("IterateDirectory: %s"), *InDirectory);
+	FileManager->IterateDirectoryRecursively(
+ 		*InDirectory,
+ 		[=, &PlatformFile, &PlatformFileTasks] (const TCHAR* FilenameOrDirectory, bool bIsDirectory) mutable
+ 		{
+			UE_LOG(LogTemp, Warning, TEXT("FilenameOrDirectory: %s"), FilenameOrDirectory);
+			//UE_LOG(LogTemp, Warning, TEXT("FPaths::ConvertRelativePathToFull(*BaseDir): %s"), *FPaths::ConvertRelativePathToFull(*InDirectory));
+			//UE_LOG(LogTemp, Warning, TEXT("FPaths::ConvertRelativePathToFull(*InDirectory): %s"), *FPaths::ConvertRelativePathToFull(*InDirectory));
+			//UE_LOG(LogTemp, Warning, TEXT("PlatformFile.ConvertToAbsolutePathForExternalAppForRead(*InDirectory): %s"), *PlatformFile.ConvertToAbsolutePathForExternalAppForRead(*InDirectory));
+			//UE_LOG(LogTemp, Warning, TEXT("PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(*InDirectory): %s"), *PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(*InDirectory));
+			//UE_LOG(LogTemp, Warning, TEXT("PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(FilenameOrDirectory): %s"), *PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(FilenameOrDirectory));
+ 			if (bIsDirectory)
+ 			{
+				UE_LOG(LogTemp, Warning, TEXT("Directory Task Add: %s"), FilenameOrDirectory);
+				PlatformFileTasks.Add([Directory  = PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(FilenameOrDirectory)] {
+					UE_LOG(LogTemp, Warning, TEXT("Directory: %s"),*Directory);
+					FPlatformFileManager::Get().GetPlatformFile().CreateDirectoryTree(*Directory);; 
+				});
+
+				//CopyAssetsToExternal(InDirectory / FPaths::GetCleanFilename(FilenameOrDirectory));
+			}
+ 			else
+ 			{
+				bool bWriteFileToExternalAbsolutePath = true;
+				FString ExternalAbsolutePath = PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(FilenameOrDirectory);
+				if (PlatformFile.FileExists(*ExternalAbsolutePath))
+				{
+					if (PlatformFile.GetTimeStamp(FilenameOrDirectory) > PlatformFile.GetTimeStamp(*ExternalAbsolutePath))
+					{
+						bWriteFileToExternalAbsolutePath = true;
+					}
+				}
+				else
+				{
+					bWriteFileToExternalAbsolutePath = true;
+				}
+				if (bWriteFileToExternalAbsolutePath)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Filename Task Add: %s"), FilenameOrDirectory);
+					PlatformFileTasks.Add([Filename = FString(FilenameOrDirectory), ExternalAbsolutePath] {
+						UE_LOG(LogTemp, Warning, TEXT("Filename: %s"), *Filename);
+						UE_LOG(LogTemp, Warning, TEXT("ExternalAbsolutePath: %s"), *ExternalAbsolutePath);
+						TArray<uint8> TempBytes;
+						if (FFileHelper::LoadFileToArray(TempBytes, *Filename, 0))
+						{
+							//FString DestFilename = GExternalFilePath / FPaths::GetCleanFilename(*SourceFilename);
+							FFileHelper::SaveArrayToFile(TempBytes, *ExternalAbsolutePath);
+						}
+					});
+				}
+ 			}
+ 			return true;
+ 		});
+#endif
+}
+
+
 void FUnrealRmlUiModule::StartupModule()
 {
-	FString BaseDir = IPluginManager::Get().FindPlugin("UnrealRmlUi")->GetBaseDir();
+	FString PluginBaseDir = IPluginManager::Get().FindPlugin("UnrealRmlUi")->GetBaseDir();
+	UE_LOG(LogTemp, Warning, TEXT("PluginBaseDir: %s"), *PluginBaseDir);
+	TArray<TFunction<void()>> PlatformFileTasks;
+	CopyAssetsToExternal(PlatformFileTasks, PluginBaseDir / TEXT("Resources") / TEXT("Rml"));
+	UE_LOG(LogTemp, Warning, TEXT("PlatformFileTask BG"));
+	for (auto& PlatformFileTask : PlatformFileTasks)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlatformFileTask EXEC"));
+		PlatformFileTask();
+	}
+	UE_LOG(LogTemp, Warning, TEXT("PlatformFileTask ED"));
 
 	UnrealRmlSystemInterface = MakeUnique<CUnrealRmlSystemInterface>();
 	UnrealRmlRenderInterface = MakeUnique<CUnrealRmlRenderInterface>();
+
 	Rml::SetSystemInterface(UnrealRmlSystemInterface.Get());
 	Rml::SetRenderInterface(UnrealRmlRenderInterface.Get());
 
@@ -26,22 +106,22 @@ void FUnrealRmlUiModule::StartupModule()
 		{
 			if (fallback_face)
 			{
-				UE_LOG(LogTemp, Fatal, TEXT("FATAL > Rml::LoadFontFace(\"%s\", %s)"), UTF8_TO_TCHAR(file_path.c_str()), fallback_face ? "true" : "false");
+				UE_LOG(LogTemp, Fatal, TEXT("FATAL > Rml::LoadFontFace(\"%s\", %s)"), UTF8_TO_TCHAR(file_path.c_str()), fallback_face ? TEXT("true") : TEXT("false"));
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("ERROR > Rml::LoadFontFace(\"%s\", %s)"), UTF8_TO_TCHAR(file_path.c_str()), fallback_face ? "true" : "false");
+				UE_LOG(LogTemp, Error, TEXT("ERROR > Rml::LoadFontFace(\"%s\", %s)"), UTF8_TO_TCHAR(file_path.c_str()), fallback_face ? TEXT("true") : TEXT("false"));
 			}
 		}
 	};
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
 	// TODO: IMPL RML FILE INTERFACE FOR ANDROID LOAD FILE 
 	// load 'Consolas' font
-	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("consola.ttf"))), false);
-	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("consolab.ttf"))), false);
-	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("consolaz.ttf"))), false);
-	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("consolai.ttf"))), false);
-
-	LoadFontFace(TCHAR_TO_UTF8(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Fonts"), TEXT("simsun.ttc"))), true);
+	LoadFontFace(TCHAR_TO_UTF8(*PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(*(PluginBaseDir / TEXT("Resources") / TEXT("Rml") / TEXT("Fonts") / TEXT("consola.ttf")))), false);
+	LoadFontFace(TCHAR_TO_UTF8(*PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(*(PluginBaseDir / TEXT("Resources") / TEXT("Rml") / TEXT("Fonts") / TEXT("consolab.ttf")))), false);
+	LoadFontFace(TCHAR_TO_UTF8(*PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(*(PluginBaseDir / TEXT("Resources") / TEXT("Rml") / TEXT("Fonts") / TEXT("consolaz.ttf")))), false);
+	LoadFontFace(TCHAR_TO_UTF8(*PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(*(PluginBaseDir / TEXT("Resources") / TEXT("Rml") / TEXT("Fonts") / TEXT("consolai.ttf")))), false);
+	LoadFontFace(TCHAR_TO_UTF8(*PlatformFile.ConvertToAbsolutePathForExternalAppForWrite(*(PluginBaseDir / TEXT("Resources") / TEXT("Rml") / TEXT("Fonts") / TEXT("simsun.ttc")))), true);
 
 	////load 'Microsoft YaHei' font
 	//LoadFontFace("C:\\Windows\\Fonts\\msyhbd.ttc", false);
